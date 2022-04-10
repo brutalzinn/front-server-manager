@@ -1,18 +1,18 @@
 class Server {
-  String? server;
   String? host;
+  String? serverName;
 
-  Server({this.server, this.host});
+  Server(this.host, this.serverName);
 
   Server.fromJson(Map<String, dynamic> json) {
-    server = json['server'];
     host = json['host'];
+    serverName = json['server_name'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['server'] = server;
-    data['host'] = host;
+    data['host'] = this.host;
+    data['server_name'] = this.serverName;
     return data;
   }
 }
