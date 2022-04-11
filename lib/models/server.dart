@@ -10,9 +10,14 @@ class Server {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['host'] = this.host;
-    data['server_name'] = this.serverName;
+    final Map<String, dynamic> data = Map<String, dynamic>();
+    data['host'] = host;
+    data['server_name'] = serverName;
     return data;
+  }
+
+    @override
+  String toString() {
+    return '{ ${host}, ${serverName} }';
   }
 }

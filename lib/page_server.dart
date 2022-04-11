@@ -40,8 +40,6 @@ class _PageServerPageState extends State<ServerPage> {
   Stats _stats = Stats();
 
  void initSocket() {
-
-  print('Connecting to chat service');
   Socket socket = io(widget.server.host, <String, dynamic>{'transports': ['websocket']});
   try{
 

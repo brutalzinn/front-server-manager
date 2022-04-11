@@ -4,16 +4,17 @@ import 'package:flutter_application_1/page_server.dart';
 import 'package:flutter_application_1/widget/display_info.dart';
 import 'package:socket_io_client/socket_io_client.dart';
 
+import 'core/config.dart';
 import 'models/server.dart';
 import 'models/stats.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
+  MyApp({Key? key}) : super(key: key);
+ 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -40,15 +41,14 @@ class MyHomePage extends StatefulWidget {
 
   
 class _MyHomePageState extends State<MyHomePage> {
-  List<Server> list_server = [new Server("http://192.168.0.159:8080", "local")];
-
-  String _valueText = "";
-  TextEditingController _hostFieldController = TextEditingController();
-  TextEditingController _serverNameFieldController = TextEditingController();
-
+   List<Server> list_server = [];//[new Server("http://192.168.0.159:8080", "local")];
+  final Config config = new Config();
+  final String _valueText = "";
+  final TextEditingController _hostFieldController = TextEditingController();
+  final TextEditingController _serverNameFieldController = TextEditingController();
+   
   //thansk to https://stackoverflow.com/questions/53844052/how-to-make-an-alertdialog-in-flutter
 showAlertDialog(BuildContext context) {
-
   Widget cancelarBotao = TextButton(
     child: Text("Cancelar"),
     onPressed:  () {Navigator.pop(context);},
@@ -61,18 +61,13 @@ showAlertDialog(BuildContext context) {
       Server server  = Server(host, server_name);
       setState(() {
         list_server.add(server);
+        config.saveServers(list_server);
       });
       Navigator.pop(context);
       },
   );
-
-  // set up the AlertDialog
   AlertDialog alert = AlertDialog(
     title: Text("Inserir servidor"),
-    // content: TextField(
-    //         controller: _hostFieldController,
-    //         decoration: InputDecoration(hintText: "http://endereço:porta"),
-    // ),
     content:Column(
       children: <Widget>[
       TextField(
@@ -83,17 +78,13 @@ showAlertDialog(BuildContext context) {
             controller: _hostFieldController,
             decoration: InputDecoration(hintText: "http://endereço:porta"),
     )
-
-
-        ],),
-  
+  ],),
     actions: [
       cancelarBotao,
       continuarBotao,
     ],
   );
 
-  // show the dialog
   showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -101,6 +92,32 @@ showAlertDialog(BuildContext context) {
     },
   );
 }
+
+updateStorage(){
+}
+
+toJSONEncodable() {
+    return list_server.map((item) {
+      return item.toJson();
+    }).toList();
+}
+List<Server> toJSONDecode(List<Server> items) {
+  return List<Server>.from(
+    (items as List).map(
+      (item) => Server.fromJson(item)
+    ),
+  );
+}
+ @override
+ void initState() {
+    super.initState();
+    WidgetsBinding.instance
+    .addPostFrameCallback((_) async {
+    list_server = await config.getServers();
+    setState(() => list_server);
+    });
+
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -114,9 +131,15 @@ showAlertDialog(BuildContext context) {
       itemBuilder: (BuildContext context, int index) {
       return ListTile(
         title: Text(list_server[index].serverName.toString()),
+        onLongPress: (){
+          //adicionar um alert dialog para confirmar o delete.
+          setState(() {
+              list_server.removeAt(index);
+              config.saveServers(list_server);
+          });
+        },
          onTap: () {
            Navigator.of(context).push(MaterialPageRoute(builder: (context) => MainPageServer(server:list_server[index])));
-          print(list_server[index]);
       },
       );
   }
