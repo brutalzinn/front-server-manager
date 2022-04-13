@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Server Status - Teste'),
+      home: const MyHomePage(title: 'Server Manager'),
     );
   }
 }
@@ -41,31 +41,53 @@ class MyHomePage extends StatefulWidget {
 
   
 class _MyHomePageState extends State<MyHomePage> {
-   List<Server> list_server = [];//[new Server("http://192.168.0.159:8080", "local")];
+  List<Server> list_server = [];//[new Server("http://192.168.0.159:8080", "local")];
+  
   final Config config = new Config();
   final String _valueText = "";
+  
   final TextEditingController _hostFieldController = TextEditingController();
   final TextEditingController _serverNameFieldController = TextEditingController();
-   
-  //thansk to https://stackoverflow.com/questions/53844052/how-to-make-an-alertdialog-in-flutter
-showAlertDialog(BuildContext context) {
+  final TextEditingController _apiKeyFieldController = TextEditingController();
+
+showAlertDialog(BuildContext context, {int index = -1}) {
+   final bool isEdit = index != -1;
+  if(index != -1){
+    Server _server = list_server[index];
+    _hostFieldController.text = _server.host ?? "";
+    _serverNameFieldController.text = _server.serverName ?? "";
+    _apiKeyFieldController.text = _server.apiKey ?? "";
+  }
+
   Widget cancelarBotao = TextButton(
     child: Text("Cancelar"),
     onPressed:  () {Navigator.pop(context);},
   );
   Widget continuarBotao = TextButton(
-    child: Text("Salvar"),
+    child: Text(isEdit ? "Editar" : "Salvar"),
     onPressed:  () {
       String host = _hostFieldController.text;
       String server_name = _serverNameFieldController.text;
-      Server server  = Server(host, server_name);
+      String api_key = _apiKeyFieldController.text;
+      Server server  = Server(host, server_name, api_key);
       setState(() {
-        list_server.add(server);
+        isEdit ? list_server[index] = server : list_server.add(server);
         config.saveServers(list_server);
       });
       Navigator.pop(context);
       },
   );
+  Widget deletarBotao = TextButton(
+    child: Text("Deletar"),
+    onPressed: isEdit ?  () {
+      setState(() {
+        list_server.removeAt(index);
+        config.saveServers(list_server);
+      });
+      Navigator.pop(context);
+      } : null,
+  );
+
   AlertDialog alert = AlertDialog(
     title: Text("Inserir servidor"),
     content:Column(
@@ -77,9 +99,14 @@ showAlertDialog(BuildContext context) {
         TextField(
             controller: _hostFieldController,
             decoration: InputDecoration(hintText: "http://endereço:porta"),
+    ),
+       TextField(
+            controller: _apiKeyFieldController,
+            decoration: InputDecoration(hintText: "Api-Key"),
     )
   ],),
     actions: [
+      deletarBotao,
       cancelarBotao,
       continuarBotao,
     ],
@@ -93,21 +120,6 @@ showAlertDialog(BuildContext context) {
   );
 }
 
-updateStorage(){
-}
-
-toJSONEncodable() {
-    return list_server.map((item) {
-      return item.toJson();
-    }).toList();
-}
-List<Server> toJSONDecode(List<Server> items) {
-  return List<Server>.from(
-    (items as List).map(
-      (item) => Server.fromJson(item)
-    ),
-  );
-}
  @override
  void initState() {
     super.initState();
@@ -132,11 +144,7 @@ List<Server> toJSONDecode(List<Server> items) {
       return ListTile(
         title: Text(list_server[index].serverName.toString()),
         onLongPress: (){
-          //adicionar um alert dialog para confirmar o delete.
-          setState(() {
-              list_server.removeAt(index);
-              config.saveServers(list_server);
-          });
+          showAlertDialog(context, index: index);
         },
          onTap: () {
            Navigator.of(context).push(MaterialPageRoute(builder: (context) => MainPageServer(server:list_server[index])));

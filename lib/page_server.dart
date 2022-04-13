@@ -4,6 +4,7 @@ import 'package:flutter_application_1/models/server.dart';
 import 'package:flutter_application_1/widget/display_info.dart';
 import 'package:socket_io_client/socket_io_client.dart';
 
+import 'core/config.dart';
 import 'models/stats.dart';
 
 
@@ -21,7 +22,7 @@ import 'models/stats.dart';
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: ServerPage(title: 'Server Status - Teste', server:server),
+      home: ServerPage(title: server.serverName ?? "Sem nome", server:server),
     );
   }
 }
@@ -40,13 +41,17 @@ class _PageServerPageState extends State<ServerPage> {
   Stats _stats = Stats();
 
  void initSocket() {
-  Socket socket = io(widget.server.host, <String, dynamic>{'transports': ['websocket']});
+  Socket socket = io(widget.server.host, OptionBuilder().setTransports(["websocket"])
+  .setExtraHeaders({"Api-Key":widget.server.apiKey})
+  .build()
+  );
+
   try{
 
   socket.connect();
   socket.onConnect((_) => print('Conected'));
 
-  socket.onDisconnect((_) => socket.disconnect());
+  socket.onDisconnect((_) => print("Desconectado"));
 
   // if (!mounted) return;
   socket.on('data', (data) =>{
