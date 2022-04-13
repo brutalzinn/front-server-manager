@@ -1,16 +1,20 @@
-# flutter_application_1
+# Projeto Server Manager
 
-A new Flutter project.
+Esse projeto consiste em uma conexão em tempo real usando socket.io entre um servidor e o aplicativo server manager. A fim de exibir métricas de uso do servidor.
 
-## Getting Started
+# Requisitos
 
-This project is a starting point for a Flutter application.
+ * [Api Server Manager](https://github.com/brutalzinn/back-server-manager)
+ * Porta 5555/TCP aberta no firewall
+  
+# Capturas de tela
 
-A few resources to get you started if this is your first Flutter project:
+![Lista de servidores](markdown/captura_1.png "Lista de servidores cadastrados").
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+![Lista de servidores](markdown/captura_2.png "Lista de servidores cadastrados").
+
+
+![Lista de servidores](markdown/captura_3.png "Lista de servidores cadastrados").
+
+
