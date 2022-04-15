@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
@@ -45,14 +46,15 @@ class _PageServerPageState extends State<ServerPage> {
   Stats _stats = Stats();
   List<ProcessModel> listProcess = [];
   late Socket socket;
+  Timer ?_debounce;
+  int _debouncetime = 500;
+  final TextEditingController _processFilter = TextEditingController();
 
  void initSocket() {
-   print("Conectar ${widget.server.host}");
    socket = io(widget.server.host, OptionBuilder().setTransports(["websocket"])
   .setExtraHeaders({"Api-Key":widget.server.apiKey})
   .build());
 
-  
   try{
 
   socket.connect();
@@ -85,9 +87,18 @@ class _PageServerPageState extends State<ServerPage> {
     void initState() {
     super.initState();
     initSocket();
+    _processFilter.addListener(_onSearchChanged);
   } 
-  final TextEditingController _processFilter = TextEditingController();
 
+   _onSearchChanged() {
+    if (_debounce?.isActive ?? false) _debounce?.cancel();
+    _debounce = Timer(Duration(milliseconds: _debouncetime), () {
+      if (_processFilter.text != "") {
+        ///here you perform your search
+        sendProcessName();
+      }
+    });
+  }
   sendProcessName(){
     socket.emit("server_process_list",{"name":_processFilter.text});
   }
@@ -116,12 +127,7 @@ class _PageServerPageState extends State<ServerPage> {
             ),
             )
             ),
-              TextButton(
-              child: Text("Pesquisar"),
-              onPressed: () {
-                 sendProcessName();
-              }
-              ),
+     
              DisplayInfo(_stats),
              DisplayProcess(listProcess)
 
