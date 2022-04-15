@@ -12,6 +12,7 @@ class DisplayInfo extends StatelessWidget {
     const TextStyle kStyle = TextStyle(
     color: Color.fromARGB(255, 0, 0, 0),
     fontWeight: FontWeight.w900,
+    fontSize: 20
     );
     return DefaultTextStyle(
       style: kStyle,

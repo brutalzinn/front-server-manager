@@ -7,6 +7,10 @@ Esse projeto consiste em uma conexão em tempo real usando socket.io entre um se
  * [Api Server Manager](https://github.com/brutalzinn/back-server-manager)
  * Porta 5555/TCP aberta no firewall
   
+# Estrutura
+
+![Lista de servidores](markdown/fluxograma.png "Lista de servidores cadastrados").
+
 # Capturas de tela
 
 ![Lista de servidores](markdown/captura_1.png "Lista de servidores cadastrados").

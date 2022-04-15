@@ -104,6 +104,11 @@ class _PageServerPageState extends State<ServerPage> {
   }
   @override
   Widget build(BuildContext context) {
+    const TextStyle kStyle = TextStyle(
+    color: Color.fromARGB(255, 0, 238, 255),
+    fontWeight: FontWeight.w900,
+    fontSize: 30
+    );
   return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -127,8 +132,8 @@ class _PageServerPageState extends State<ServerPage> {
             ),
             )
             ),
-     
              DisplayInfo(_stats),
+            Text("Processos", style: kStyle),
              DisplayProcess(listProcess)
 
         ],

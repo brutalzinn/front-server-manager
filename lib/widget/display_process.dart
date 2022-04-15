@@ -9,22 +9,20 @@ class DisplayProcess extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    // const TextStyle kStyle = TextStyle(
-    // color: Color.fromARGB(255, 0, 0, 0),
-    // fontWeight: FontWeight.w900,
-    // );
+    const TextStyle kStyle = TextStyle(
+    color: Color.fromARGB(255, 0, 0, 0),
+    fontWeight: FontWeight.w400,
+    fontSize: 20
+    );
     return Expanded(child: ListView.builder(
-    //  shrinkWrap: true,
-     // physics: ScrollPhysics(),
       itemBuilder: (BuildContext context, int index) {
       if(index < data.length){
       return ListTile(
           title: Text("${data[index].name} - Pid: ${data[index].pid} - Ram: ${data[index].memory}"),
       ); 
-      }
+     }
       else if (index == data.length) {
-        return const Center(child: Text('Fim da lista'));
+        return  Center(child: Text("${data.length} ${data.length > 1 ? "processos" : "processo"} em andamento" ,style: kStyle));
       }
       else
       {
