@@ -21,7 +21,7 @@ class Server {
     return data;
   }
 
-    @override
+  @override
   String toString() {
     return '{ ${host}, ${serverName}, ${apiKey} }';
   }

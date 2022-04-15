@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter_application_1/models/process.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../models/server.dart';
@@ -9,10 +10,7 @@ class Config {
 
  Config(){
   storage = FlutterSecureStorage();
-  }
-
-   static String apiKey = "blablabla";
-  
+  }  
 
   Future<void> saveServers(List<Server> list) async {
     var json = jsonEncode(list);
@@ -24,6 +22,6 @@ class Config {
     if(json == null) return [];
     var list = jsonDecode(json) as List;
     return list.map((i)=>Server.fromJson(i)).toList();
-
   }
+  
 }

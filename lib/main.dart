@@ -44,11 +44,14 @@ class _MyHomePageState extends State<MyHomePage> {
   List<Server> listServer = [];//[new Server("http://192.168.0.159:8080", "local")];
   
   final Config config = Config();  
+
+
+showAlertDialog(BuildContext context, {int index = -1}) {
+  
   final TextEditingController _hostFieldController = TextEditingController();
   final TextEditingController _serverNameFieldController = TextEditingController();
   final TextEditingController _apiKeyFieldController = TextEditingController();
 
-showAlertDialog(BuildContext context, {int index = -1}) {
    final bool isEdit = index != -1;
   if(index != -1){
     Server _server = listServer[index];
@@ -153,7 +156,7 @@ showAlertDialog(BuildContext context, {int index = -1}) {
       },
       );
   }
-        ),
+  ),
     ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
