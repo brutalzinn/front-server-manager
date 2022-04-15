@@ -4,7 +4,7 @@ import 'package:flutter_application_1/models/stats.dart';
 
 class DisplayInfo extends StatelessWidget {
   final Stats data;
-  DisplayInfo(this.data);
+  DisplayInfo(this.data, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -47,16 +47,17 @@ class _PageServerPageState extends State<ServerPage> {
   late Socket socket;
 
  void initSocket() {
+   print("Conectar ${widget.server.host}");
    socket = io(widget.server.host, OptionBuilder().setTransports(["websocket"])
   .setExtraHeaders({"Api-Key":widget.server.apiKey})
   .build());
+
+  
   try{
 
   socket.connect();
-  socket.onConnect((_) => print('Conected'));
+  socket.onConnect((_) => socket.emit("server_stats","null"));
   socket.onDisconnect((_) => print("Desconectado"));
-  // socket.emit("server_stats");
-  // if (!mounted) return;
   socket.on('stats_monitor', (data) =>{
     if (mounted) {
       setState(() {
@@ -107,9 +108,9 @@ class _PageServerPageState extends State<ServerPage> {
             InputDecoration(
               hintText: "Nome do processo",
               suffixIcon: IconButton(
-              onPressed: () => {
-                _processFilter.clear,
-                sendProcessName
+              onPressed: () {
+                _processFilter.clear();
+                sendProcessName();
               },
               icon: Icon(Icons.clear),
             ),
@@ -117,10 +118,10 @@ class _PageServerPageState extends State<ServerPage> {
             ),
               TextButton(
               child: Text("Pesquisar"),
-              onPressed: sendProcessName,
+              onPressed: () {
+                 sendProcessName();
+              }
               ),
-              
-    
              DisplayInfo(_stats),
              DisplayProcess(listProcess)
 
