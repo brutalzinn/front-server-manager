@@ -41,11 +41,9 @@ class MyHomePage extends StatefulWidget {
 
   
 class _MyHomePageState extends State<MyHomePage> {
-  List<Server> list_server = [];//[new Server("http://192.168.0.159:8080", "local")];
+  List<Server> listServer = [];//[new Server("http://192.168.0.159:8080", "local")];
   
-  final Config config = new Config();
-  final String _valueText = "";
-  
+  final Config config = Config();  
   final TextEditingController _hostFieldController = TextEditingController();
   final TextEditingController _serverNameFieldController = TextEditingController();
   final TextEditingController _apiKeyFieldController = TextEditingController();
@@ -53,10 +51,14 @@ class _MyHomePageState extends State<MyHomePage> {
 showAlertDialog(BuildContext context, {int index = -1}) {
    final bool isEdit = index != -1;
   if(index != -1){
-    Server _server = list_server[index];
+    Server _server = listServer[index];
     _hostFieldController.text = _server.host ?? "";
     _serverNameFieldController.text = _server.serverName ?? "";
     _apiKeyFieldController.text = _server.apiKey ?? "";
+  }else{
+    _apiKeyFieldController.clear();
+    _serverNameFieldController.clear();
+    _hostFieldController.clear();
   }
 
   Widget cancelarBotao = TextButton(
@@ -71,8 +73,8 @@ showAlertDialog(BuildContext context, {int index = -1}) {
       String api_key = _apiKeyFieldController.text;
       Server server  = Server(host, server_name, api_key);
       setState(() {
-        isEdit ? list_server[index] = server : list_server.add(server);
-        config.saveServers(list_server);
+        isEdit ? listServer[index] = server : listServer.add(server);
+        config.saveServers(listServer);
       });
       Navigator.pop(context);
       },
@@ -81,8 +83,8 @@ showAlertDialog(BuildContext context, {int index = -1}) {
     child: Text("Deletar"),
     onPressed: isEdit ?  () {
       setState(() {
-        list_server.removeAt(index);
-        config.saveServers(list_server);
+        listServer.removeAt(index);
+        config.saveServers(listServer);
       });
       Navigator.pop(context);
       } : null,
@@ -125,8 +127,8 @@ showAlertDialog(BuildContext context, {int index = -1}) {
     super.initState();
     WidgetsBinding.instance
     .addPostFrameCallback((_) async {
-    list_server = await config.getServers();
-    setState(() => list_server);
+    listServer = await config.getServers();
+    setState(() => listServer);
     });
 
   }
@@ -139,15 +141,15 @@ showAlertDialog(BuildContext context, {int index = -1}) {
       body: Center(
       child: ListView.builder(
       padding: const EdgeInsets.all(8),
-      itemCount: list_server.length,
+      itemCount: listServer.length,
       itemBuilder: (BuildContext context, int index) {
       return ListTile(
-        title: Text(list_server[index].serverName.toString()),
+        title: Text(listServer[index].serverName.toString()),
         onLongPress: (){
           showAlertDialog(context, index: index);
         },
          onTap: () {
-           Navigator.of(context).push(MaterialPageRoute(builder: (context) => MainPageServer(server:list_server[index])));
+           Navigator.of(context).push(MaterialPageRoute(builder: (context) => MainPageServer(server:listServer[index])));
       },
       );
   }
