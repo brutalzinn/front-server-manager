@@ -45,7 +45,7 @@ class _MyHomePageState extends State<MyHomePage> {
   
   final Config config = Config();  
 
-
+//remover showAlertDialog com a classe generic dialog
 showAlertDialog(BuildContext context, {int index = -1}) {
   
   final TextEditingController _hostFieldController = TextEditingController();
@@ -109,7 +109,8 @@ showAlertDialog(BuildContext context, {int index = -1}) {
             controller: _apiKeyFieldController,
             decoration: InputDecoration(hintText: "Api-Key"),
     )
-  ],),
+  ],
+  ),
     actions: [
       deletarBotao,
       cancelarBotao,
