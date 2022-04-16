@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 enum MODE {
   edit,
   insert,
-  simple
+  simple,
+  noConfirmButtons
 }
 
 class BaseAlertDialog extends StatelessWidget {
@@ -25,6 +26,14 @@ late MODE _mode;
    _noOnPressed = noOnPressed;
    _mode = MODE.simple;
   }
+    BaseAlertDialog.SimpleActions({required String title, required String content, required Function yesOnPressed, required Function noOnPressed}){
+   _title = title;
+   _content = content;
+   _yesOnPressed = yesOnPressed;
+   _noOnPressed = noOnPressed;
+   _mode = MODE.noConfirmButtons;
+  }
+
   BaseAlertDialog.Editor({required String title, required List<Widget> inputs,required Function onShow ,required Function yesOnPressed, required Function noOnPressed}){
    _title = title;
    _inputs = inputs;
@@ -42,7 +51,7 @@ late MODE _mode;
    _onShow = onShow;
   }
 
- Widget Tipo (){
+Widget customContent(){
    switch(_mode){
      case MODE.edit:
      case MODE.insert:
@@ -50,21 +59,46 @@ late MODE _mode;
      return Column(
       children: <Widget>[..._inputs]
       );
+      case MODE.noConfirmButtons:
       case MODE.simple:
       return Text(_content);
    }
-   
-  }
-  @override
-Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text(_title),
-      content: Tipo(),
-      shape:
-      RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      actions: <Widget>[
+}
+ Widget customButtons(BuildContext context){
+   switch(_mode){
+     case MODE.edit:
+      return Row(      
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: <Widget>[
+         TextButton(
+          child: const Text("Deletar"),
+          onPressed: () {
+            _noOnPressed();
+            Navigator.pop(context);
+          },
+        ),
         TextButton(
-          child: const Text("Não"),
+          child: const Text("Cancelar"),
+          onPressed: () {
+            _noOnPressed();
+            Navigator.pop(context);
+          },
+        ),
+        TextButton(
+          child: const Text("Editar"),
+          onPressed: () {
+            _yesOnPressed();
+            Navigator.pop(context);
+          },
+        ),
+      ],
+      );
+     case MODE.insert:
+     return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: <Widget>[
+        TextButton(
+          child: const Text("Cancelar"),
           onPressed: () {
             _noOnPressed();
             Navigator.pop(context);
@@ -77,6 +111,48 @@ Widget build(BuildContext context) {
             Navigator.pop(context);
           },
         ),
+      ],
+      );
+
+      case MODE.noConfirmButtons:
+         return  TextButton(
+          child: const Text("OK"),
+          onPressed: () {
+            _yesOnPressed();
+            Navigator.pop(context);
+          },
+        );
+      case MODE.simple:
+      return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: <Widget>[
+           TextButton(
+          child: const Text("Cancelar"),
+          onPressed: () {
+            _noOnPressed();
+            Navigator.pop(context);
+          },
+        ),   
+         TextButton(
+          child: const Text("Sim"),
+          onPressed: () {
+            _yesOnPressed();
+            Navigator.pop(context);
+          },
+        )    
+        ]);
+        
+   }
+}
+
+@override
+Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text(_title),
+      content: customContent(),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      actions: <Widget>[
+        customButtons(context)
       ],
     );
   }

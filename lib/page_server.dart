@@ -9,6 +9,7 @@ import 'package:flutter_application_1/widget/display_process.dart';
 import 'package:socket_io_client/socket_io_client.dart';
 
 import 'core/config.dart';
+import 'core/genericDialog.dart';
 import 'models/process.dart';
 import 'models/stats.dart';
 
@@ -67,9 +68,10 @@ class _PageServerPageState extends State<ServerPage> {
     })
     }
   });
-
+socket.on('info', (data) =>{
+_infoAlert(context, data)
+});
   socket.on('process_list', (data) =>{
-
     if (mounted) {
       setState(() {
        listProcess = ProcessModel.toList(data);
@@ -102,6 +104,19 @@ class _PageServerPageState extends State<ServerPage> {
   sendProcessName(){
     socket.emit("server_process_list",{"name":_processFilter.text});
   }
+
+  //remover showdialog e tipar esse dynamic.
+  _infoAlert(BuildContext context, dynamic data) {
+  var baseDialog = BaseAlertDialog.SimpleActions(
+    title: "Aviso",
+    content: data["message"],
+    yesOnPressed: () {
+    },
+    noOnPressed: () {
+    });
+  showDialog(context: context, builder: (BuildContext context) => baseDialog);
+}
+
   @override
   Widget build(BuildContext context) {
     const TextStyle kStyle = TextStyle(
@@ -132,9 +147,9 @@ class _PageServerPageState extends State<ServerPage> {
             ),
             )
             ),
-             DisplayInfo(_stats),
+            DisplayInfo(_stats),
             Text("Processos", style: kStyle),
-             DisplayProcess(listProcess)
+            DisplayProcess(listProcess, socket)
 
         ],
       ),//DisplayInfo(_stats),
